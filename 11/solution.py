@@ -1,5 +1,5 @@
-# Solution to Advent of Code 20XX
-# Day X : 
+# Solution to Advent of Code 2025
+# Day 11: Reactor
 
 #### SUMMARY OF TASKS ####
 # 1. 
@@ -10,7 +10,7 @@
 
 def solve(input_file):
     """
-    Produce the solution to day x problem - 
+    Produce the solution to Day 11: Reactor
     """
     return
 
@@ -20,7 +20,7 @@ def solve(input_file):
 #### Part 2 Goes Here ####
 def solve_part2(input_file):
     """
-    Produce the solution to part 2 of day x problem - 
+    Produce the solution to part 2 of Day 11: Reactor 
     """
     return
 
