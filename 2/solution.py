@@ -55,7 +55,16 @@ def solve(input_file):
 
     return sum(invalid_ids)
 
+
+#### SUMMARY OF TASKS (Part 2) ####
+# NOTE: New Rule is any number made up of repeated sequence at least twice is invalid.
+# 1. Check for patterns of up to len(int_str) // 2, any pattern cant repeat less than two times.
+# 2. Iterate through all possible pattern lengths and check if str[:i] == str[i:2i], then str[:i] == str[2i:3i]
+# until str[:i] == str[(k-1)i:ki] where k = len(int_str) // i
+# 3. Found the invalid if the iterative checks above passes
 #### Helper Functions For Part 2 Goes Here (if any) ####
+
+
 
 
 #### Part 2 Goes Here ####
