@@ -113,7 +113,7 @@ def solve_part2(input_file):
     def dfs(row, col):
         """
         Inner Helper Function - Perform dfs starting from coordinate (row, col).
-        Return the number of possible timelines from (row, col) to the bottom of the board.
+        Return the number of possible split timelines from (row, col) to the bottom of the board.
         """
         # Return 0 if the tile is out of bounds
         if not is_in_bounds((row, col)):
@@ -123,17 +123,23 @@ def solve_part2(input_file):
         if row == num_rows - 1:     # last row
             return 1
         
+        # This coordinate has been visited and the number of split timelines recorded
         if memo[row][col] != -1:
             return memo[row][col]
         
+        # Tile is a splitter
         if board[row][col] == SPLITTER:
+            # Split the particle into left and right respectively
             left = dfs(row, col - 1) if is_in_bounds((row, col - 1)) and board[row][col - 1] == EMPTY else 0
             right = dfs(row, col + 1) if is_in_bounds((row, col + 1)) and board[row][col + 1] == EMPTY else 0
+
+            # Combine the number of split timelines
             result = left + right
         else:
-            if is_in_bounds((row+1, col)):
-                result = dfs(row+1, col)
+            if is_in_bounds((row+1, col)):  # Tile is an empty slot
+                result = dfs(row+1, col)    # Takes the result of the tile below it (they are on the same timeline)
 
+        # Store the result in memoization matrix
         memo[row][col] = result
         return result
 
@@ -142,6 +148,9 @@ def solve_part2(input_file):
     start = find_start(board)
 
     num_rows, num_cols = len(board), len(board[0])
+
+    # Initialize a matrix of -1 to represent tiles on the board not visited
+    # and store the number of split timelines starting from any (row, col)
     memo = [[-1] * num_cols for _ in range(num_rows)]
                     
     return dfs(*start)
