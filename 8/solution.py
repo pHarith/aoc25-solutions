@@ -40,7 +40,7 @@ def find_euc_dist_all(coords):
             euc_dist_lst.append((find_euclidean_distance(coord1, coord2), coord1, coord2))
     return euc_dist_lst
 
-def solve(input_file):
+def solve(input_file, limit):
     """
     Produce the solution to Day 8: Playground
     """
@@ -48,11 +48,13 @@ def solve(input_file):
     sorted_distances = find_euc_dist_all(coords)
     sorted_distances.sort()
 
+    print(sorted_distances[:10])
+
     groups = []
     groups_size = []
     
 
-    for i in range(TEST_LIMIT):
+    for i in range(limit):
         _, coord1, coord2 = sorted_distances[i]
         
         coord1_group, coord2_group = None, None
@@ -83,10 +85,17 @@ def solve(input_file):
         elif coord1_group is None and coord2_group is not None:
             groups[coord2_group].add(coord1)
             groups_size[coord2_group] += 1
+
+        elif coord1_group != coord2_group:
+            print(coord1_group, coord2_group)
+            groups[coord1_group] = groups[coord1_group].union(groups[coord2_group])
+            groups_size[coord1_group] += groups_size[coord2_group]
+            groups.pop(coord2_group)
+            groups_size.pop(coord2_group)
     
-    groups_size.sort()
-    print(groups)
-    print(groups_size)
+    groups_size.sort(reverse=True)
+    #print(groups)
+    #print(groups_size)
     return prod(groups_size[:3])
 
 #### Helper Functions For Part 2 Goes Here (if any) ####
@@ -101,6 +110,6 @@ def solve_part2(input_file):
 
 
 if __name__ == "__main__":
-    # input = 'input.txt'
-    input = 'test.txt'
-    print(f"The solution to part 1 is {solve(input)}.")
+    input = 'input.txt'
+    # input = 'test.txt'
+    print(f"The solution to part 1 is {solve(input, PAIR_LIMIT)}.")
