@@ -59,12 +59,12 @@ def solve(input_file, limit):
         
         coord1_group, coord2_group = None, None
         
-        for i in range(len(groups)):
-            if coord1 in groups[i]:
-                coord1_group = i
+        for j in range(len(groups)):
+            if coord1 in groups[j]:
+                coord1_group = j
             
-            if coord2 in groups[i]:
-                coord2_group = i
+            if coord2 in groups[j]:
+                coord2_group = j
 
         if coord1_group is not None and coord1_group == coord2_group:
             continue
@@ -106,10 +106,65 @@ def solve_part2(input_file):
     """
     Produce the solution to part 2 of Day 8: Playground
     """
-    return 
+    coords = read_coordinates(input_file)
+    sorted_distances = find_euc_dist_all(coords)
+    sorted_distances.sort()
+    groups = []
+    groups_size = []
 
+    i = 0
+
+    while i < len(sorted_distances):
+        print(i, len(sorted_distances))
+        _, coord1, coord2 = sorted_distances[i]
+        
+        coord1_group, coord2_group = None, None
+
+        i += 1
+        
+        for j in range(len(groups)):
+            if coord1 in groups[j]:
+                coord1_group = j
+            
+            if coord2 in groups[j]:
+                coord2_group = j
+
+        if coord1_group is not None and coord1_group == coord2_group:
+            continue
+        
+        # groups is empty or both coordinates make a new set
+        if coord1_group is None and coord2_group is None:
+            groups.append({coord1, coord2})
+
+            # Append the most recently added group into the size list
+            groups_size.append(2)
+            
+        # first coordinate is part of an existing set but group 2 is not
+        elif coord1_group is not None and coord2_group is None:
+            groups[coord1_group].add(coord2)
+            groups_size[coord1_group] += 1
+
+        # first coordinate is part of an existing set but group 2 is not
+        elif coord1_group is None and coord2_group is not None:
+            groups[coord2_group].add(coord1)
+            groups_size[coord2_group] += 1
+
+        elif coord1_group != coord2_group:
+            print(coord1_group, coord2_group)
+            groups[coord1_group] = groups[coord1_group].union(groups[coord2_group])
+            groups_size[coord1_group] += groups_size[coord2_group]
+            groups.pop(coord2_group)
+            groups_size.pop(coord2_group)
+
+        if len(groups) == 1 and len(groups[0]) == len(coords):
+            print(coord1, coord2)
+            return coord1[0] * coord2[0]
+    
+    # Connected all pairs and has not found a pair that causes all the junction boxes to form a larger circuit, return -1 to signal error
+    return -1
 
 if __name__ == "__main__":
     input = 'input.txt'
     # input = 'test.txt'
-    print(f"The solution to part 1 is {solve(input, PAIR_LIMIT)}.")
+    # print(f"The solution to part 1 is {solve(input, PAIR_LIMIT)}.")
+    print(f"The solution to part 2 is {solve_part2(input)}.")
