@@ -44,59 +44,68 @@ def solve(input_file, limit):
     """
     Produce the solution to Day 8: Playground
     """
+    # Grab coordinates and compute distances between pairs
     coords = read_coordinates(input_file)
     sorted_distances = find_euc_dist_all(coords)
+
+    # Sort the distances in ascending order
     sorted_distances.sort()
 
-    print(sorted_distances[:10])
+    # List to store circuits
+    circuits = []
 
-    groups = []
-    groups_size = []
+    # List to store size of each circuit of the same index
+    circuits_size = []
     
-
     for i in range(limit):
         _, coord1, coord2 = sorted_distances[i]
-        
-        coord1_group, coord2_group = None, None
-        
-        for j in range(len(groups)):
-            if coord1 in groups[j]:
-                coord1_group = j
-            
-            if coord2 in groups[j]:
-                coord2_group = j
 
-        if coord1_group is not None and coord1_group == coord2_group:
+        # Initialize the circuit they are a part of
+        coord1_circuit, coord2_circuit = None, None
+        
+        # Update their circuits (if already in a circuit)
+        for j in range(len(circuits)):
+            if coord1 in circuits[j]:
+                coord1_circuit = j
+            
+            if coord2 in circuits[j]:
+                coord2_circuit = j
+
+        # Both coordinates exists in the same circuit
+        if coord1_circuit is not None and coord1_circuit == coord2_circuit:
             continue
         
-        # groups is empty or both coordinates make a new set
-        if coord1_group is None and coord2_group is None:
-            groups.append({coord1, coord2})
+        # circuits is empty or both coordinates make a new set
+        if coord1_circuit is None and coord2_circuit is None:
+            circuits.append({coord1, coord2})
 
-            # Append the most recently added group into the size list
-            groups_size.append(2)
-            
-        # first coordinate is part of an existing set but group 2 is not
-        elif coord1_group is not None and coord2_group is None:
-            groups[coord1_group].add(coord2)
-            groups_size[coord1_group] += 1
+            # Append the most recently added circuit into the size list
+            circuits_size.append(2)
 
-        # first coordinate is part of an existing set but group 2 is not
-        elif coord1_group is None and coord2_group is not None:
-            groups[coord2_group].add(coord1)
-            groups_size[coord2_group] += 1
+        # first coordinate is not part of an existing circuit set but 
+        # second coordinate is
+        elif coord1_circuit is None and coord2_circuit is not None:
+            circuits[coord2_circuit].add(coord1)
+            circuits_size[coord2_circuit] += 1
 
-        elif coord1_group != coord2_group:
-            print(coord1_group, coord2_group)
-            groups[coord1_group] = groups[coord1_group].union(groups[coord2_group])
-            groups_size[coord1_group] += groups_size[coord2_group]
-            groups.pop(coord2_group)
-            groups_size.pop(coord2_group)
+        # first coordinate is part of an existing circuit set but 
+        # second coordinate is not
+        elif coord1_circuit is not None and coord2_circuit is None:
+            circuits[coord1_circuit].add(coord2)
+            circuits_size[coord1_circuit] += 1
+
+        # Both coordinates exist in different circuits
+        elif coord1_circuit != coord2_circuit:
+            # Merge curcuits into a single circuit
+            circuits[coord1_circuit] = circuits[coord1_circuit].union(circuits[coord2_circuit])
+
+            # Change the size of the newly merged circuit and remove the other circuit
+            circuits_size[coord1_circuit] += circuits_size[coord2_circuit]
+            circuits.pop(coord2_circuit)
+            circuits_size.pop(coord2_circuit)
     
-    groups_size.sort(reverse=True)
-    #print(groups)
-    #print(groups_size)
-    return prod(groups_size[:3])
+    circuits_size.sort(reverse=True)
+    return prod(circuits_size[:3])
 
 #### Helper Functions For Part 2 Goes Here (if any) ####
 
@@ -106,65 +115,79 @@ def solve_part2(input_file):
     """
     Produce the solution to part 2 of Day 8: Playground
     """
+    # Grab coordinates and compute distances between pairs
     coords = read_coordinates(input_file)
     sorted_distances = find_euc_dist_all(coords)
+
+    # Sort the distances in ascending order
     sorted_distances.sort()
-    groups = []
-    groups_size = []
+
+    # List to store circuits
+    circuits = []
+
+    # List to store size of each circuit of the same index
+    circuits_size = []
 
     i = 0
-
     while i < len(sorted_distances):
-        print(i, len(sorted_distances))
         _, coord1, coord2 = sorted_distances[i]
-        
-        coord1_group, coord2_group = None, None
 
         i += 1
-        
-        for j in range(len(groups)):
-            if coord1 in groups[j]:
-                coord1_group = j
-            
-            if coord2 in groups[j]:
-                coord2_group = j
 
-        if coord1_group is not None and coord1_group == coord2_group:
+        # Initialize the circuit they are a part of
+        coord1_circuit, coord2_circuit = None, None
+        
+        # Update their circuits (if already in a circuit)
+        for j in range(len(circuits)):
+            if coord1 in circuits[j]:
+                coord1_circuit = j
+            
+            if coord2 in circuits[j]:
+                coord2_circuit = j
+
+        # Both coordinates exists in the same circuit
+        if coord1_circuit is not None and coord1_circuit == coord2_circuit:
             continue
         
-        # groups is empty or both coordinates make a new set
-        if coord1_group is None and coord2_group is None:
-            groups.append({coord1, coord2})
+        # circuits is empty or both coordinates make a new set
+        if coord1_circuit is None and coord2_circuit is None:
+            circuits.append({coord1, coord2})
 
-            # Append the most recently added group into the size list
-            groups_size.append(2)
-            
-        # first coordinate is part of an existing set but group 2 is not
-        elif coord1_group is not None and coord2_group is None:
-            groups[coord1_group].add(coord2)
-            groups_size[coord1_group] += 1
+            # Append the most recently added circuit into the size list
+            circuits_size.append(2)
 
-        # first coordinate is part of an existing set but group 2 is not
-        elif coord1_group is None and coord2_group is not None:
-            groups[coord2_group].add(coord1)
-            groups_size[coord2_group] += 1
+        # first coordinate is not part of an existing circuit set but 
+        # second coordinate is
+        elif coord1_circuit is None and coord2_circuit is not None:
+            circuits[coord2_circuit].add(coord1)
+            circuits_size[coord2_circuit] += 1
 
-        elif coord1_group != coord2_group:
-            print(coord1_group, coord2_group)
-            groups[coord1_group] = groups[coord1_group].union(groups[coord2_group])
-            groups_size[coord1_group] += groups_size[coord2_group]
-            groups.pop(coord2_group)
-            groups_size.pop(coord2_group)
+        # first coordinate is part of an existing circuit set but 
+        # second coordinate is not
+        elif coord1_circuit is not None and coord2_circuit is None:
+            circuits[coord1_circuit].add(coord2)
+            circuits_size[coord1_circuit] += 1
 
-        if len(groups) == 1 and len(groups[0]) == len(coords):
-            print(coord1, coord2)
+        # Both coordinates exist in different circuits
+        elif coord1_circuit != coord2_circuit:
+            # Merge curcuits into a single circuit
+            circuits[coord1_circuit] = circuits[coord1_circuit].union(circuits[coord2_circuit])
+
+            # Change the size of the newly merged circuit and remove the other circuit
+            circuits_size[coord1_circuit] += circuits_size[coord2_circuit]
+            circuits.pop(coord2_circuit)
+            circuits_size.pop(coord2_circuit)
+
+        # Check if all every junction boxes go into a single circuit
+        if len(circuits) == 1 and len(circuits[0]) == len(coords):
+            # Return the product of x-coord of the two latest junction boxes
             return coord1[0] * coord2[0]
-    
-    # Connected all pairs and has not found a pair that causes all the junction boxes to form a larger circuit, return -1 to signal error
+        
+    # Connected all pairs and has not found a pair that causes all junction boxes to form a single larger circuit, return -1 to signal error
     return -1
 
 if __name__ == "__main__":
     input = 'input.txt'
     # input = 'test.txt'
-    # print(f"The solution to part 1 is {solve(input, PAIR_LIMIT)}.")
+    print(f"The solution to part 1 is {solve(input, PAIR_LIMIT)}.")
     print(f"The solution to part 2 is {solve_part2(input)}.")
