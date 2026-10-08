@@ -1,6 +1,11 @@
 # Solution to Advent of Code 2025
 # Day 10: Factory
 
+ON = "#"
+OFF = "."
+
+from itertools import combinations
+from collections import Counter
 
 #### Helper Functions Goes Here (if any) ####
 def read_input(input):
@@ -15,16 +20,34 @@ def read_input(input):
             buttons.append([num[1:-1] for num in bt])
             joltages.append(jt[1:-1])
 
-            print(light_diagrams, buttons, joltages)
-
     return light_diagrams, buttons, joltages
 
 def solve(input_file):
     """
     Produce the solution to Day 10: Factory
     """
-    input = read_input(input_file)
-    return
+    lowest_btn_presses = []
+    light_diagrams, buttons, _ = read_input(input_file)
+    for i in range(len(light_diagrams)):
+        found_lowest = False
+        switch_map = {i:(int(k==ON)) for i, k in enumerate(light_diagrams[i])}
+
+        for j in range(len(buttons[i])):
+            for config in list(combinations(buttons[i], j)):
+                count = Counter(int(num) for button in config for num in button.split(','))
+
+                test_map = {k:count[k] % 2 for k in range(len(light_diagrams[i]))}
+
+                if switch_map == test_map:
+                    lowest_btn_presses.append(j)
+                    found_lowest = True
+                    break
+
+            if found_lowest:
+                break
+                    
+
+    return sum(lowest_btn_presses)
 
 #### Helper Functions For Part 2 Goes Here (if any) ####
 
@@ -38,8 +61,8 @@ def solve_part2(input_file):
 
 
 if __name__ == "__main__":
-    #input = 'input.txt'
-    input = 'test.txt'
+    input = 'input.txt'
+    # input = 'test.txt'
 
 
     print(f"The solution to part 1 is {solve(input)}.")
