@@ -28,4 +28,5 @@ def solve_part2(input_file):
 if __name__ == "__main__":
     input = 'input.txt'
     # input = 'test.txt'
-    print(f"The solution is {solve(input)}.")
+    print(f"The solution to part 1 is {solve(input)}.")
+    print(f"The solution to part 2 is {solve_part2(input)}.")

@@ -1,12 +1,18 @@
 # Solution to Advent of Code 2025
 # Day 10: Factory
 
-#### SUMMARY OF TASKS ####
-# 1. 
-
 
 #### Helper Functions Goes Here (if any) ####
+def read_input(input):
+    light_diagram, buttons, joltages = [], [], []
 
+    with open(input, "r") as config:
+        for line in config:
+            light_diagram.append()
+            buttons.append()
+            joltages.append()
+
+    return light_diagram, buttons, joltages
 
 def solve(input_file):
     """
@@ -28,4 +34,5 @@ def solve_part2(input_file):
 if __name__ == "__main__":
     input = 'input.txt'
     # input = 'test.txt'
-    print(f"The solution is {solve(input)}.")
+    print(f"The solution to part 1 is {solve(input)}.")
+    print(f"The solution to part 2 is {solve_part2(input)}.")
